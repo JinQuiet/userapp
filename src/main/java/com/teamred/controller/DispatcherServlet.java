@@ -1,12 +1,12 @@
 package com.teamred.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.teamred.dao.UserDao;
-import com.teamred.model.User;
+import com.teamred.action.Action;
+import com.teamred.action.ActionFactory;
+
+import com.teamred.util.PathParser;
+import com.teamred.util.RequestMethod;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,7 +42,9 @@ public class DispatcherServlet extends HttpServlet {
 
 			Action action = ActionFactory.getInstance().getAction(request);
 			String view = action.execute(request, response);
-			if (view.equals(request.getPathInfo().substring(1))) {
+
+			if (request.getMethod().equals(RequestMethod.GET.name()) || 
+				view.equals(PathParser.getPathEntryPoint(request.getPathInfo()))) {
 
 				request.getRequestDispatcher(URI_JSP_HOME + view + URI_EXTENSION).forward(request, response);
 
@@ -101,53 +103,3 @@ public class DispatcherServlet extends HttpServlet {
 	}
 }
 
-class ActionFactory {
-
-	private static ActionFactory instance;
-
-	private Map<String, Action> actions;
-
-	public ActionFactory() {
-		actions = new HashMap<>();
-
-		actions.put("index", new IndexAction());
-		actions.put("users", new UsersAction());
-	}
-
-	public static ActionFactory getInstance() {
-		if (instance == null) {
-			return new ActionFactory();
-		} else {
-			return instance;
-		}
-	}
-
-	public Action getAction(HttpServletRequest request) {
-		// pulls action name from the request sting stripping leading "/" symbol
-		return actions.get(request.getPathInfo().substring(1));
-	}
-}
-
-interface Action {
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
-}
-
-class IndexAction implements Action {
-
-	@Override
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return "index";
-	}
-}
-
-class UsersAction implements Action {
-
-	@Override
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		List<User> users= new UserDao().getUsers();
-		request.setAttribute("users", users);
-
-		return "users";
-	}
-}

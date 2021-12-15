@@ -25,11 +25,12 @@ public class DispatcherServletFIlter extends HttpFilter {
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		/*
+
 		request.getContextPath();
 		request.getRequestURI();
-		request.getPathInfo();		
-		*/
+		request.getPathInfo();
+		request.getServletPath();	
+
 
 		//real path to the resource we're trying to get
 		String path = request.getRequestURI().substring(request.getContextPath().length());
