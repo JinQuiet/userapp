@@ -11,9 +11,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet(name = "DispatcherServlet", urlPatterns = { "/pages/*" })
 public class DispatcherServlet extends HttpServlet {
+	private static final Logger LOGGER = LogManager.getLogger(DispatcherServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	private static ActionFactory actionFactory;
@@ -80,6 +83,7 @@ public class DispatcherServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		LOGGER.info("Servlet's doGet() called");
 		processRequest(request, response);
 	}
 
@@ -94,6 +98,7 @@ public class DispatcherServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		LOGGER.info("Servlet's doPost() called");
 		processRequest(request, response);
 	}
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+
+    <Properties>
+        <Property name="logdir">C:\Users\Pandora\Desktop\apache-tomcat-10.0.14\logs</Property>
+        <Property name="layout">%d [%t] %-5p %c - %m%n</Property>
+    </Properties>
+
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <RollingFile name="App-local"
+                     fileName="${logdir}/app-local.log"
+                     filePattern="${logdir}/app-local.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${layout}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="App-local" />
+        </Root>
+
+    </Loggers>
+
+</Configuration>
