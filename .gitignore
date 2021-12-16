@@ -7,5 +7,10 @@
 *.iml
 .classpath
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
+
 /bin
 /target
