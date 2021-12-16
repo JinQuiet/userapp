@@ -55,7 +55,14 @@
                            <a href="${pageContext.request.contextPath}/users/${user.userId}" class="btn btn-info">EDIT</a>
                         </td>
                         <td>
-                           <a href="${pageContext.request.contextPath}/users/${user.userId}" class="btn btn-danger">DELETE</a>
+
+                           <form method="POST" 
+                           action="${pageContext.request.contextPath}/users/<c:out value="${user.userId}"/>">
+                           <input type="hidden" name="actualHttpMethod" value="DELETE">
+                           <input  id="userId" name="userId" value="<c:out value="${user.userId}"/>" type="hidden"/>                                 
+                           <button type="submit" class="btn btn-danger">DELETE</button>
+                        </form>                           
+
                         </td>
                      </tr>
                   </c:forEach>

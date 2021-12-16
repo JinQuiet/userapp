@@ -1,6 +1,6 @@
 package com.teamred.action;
 
-import com.teamred.dao.UserDao;
+import com.teamred.dao.Dao;
 import com.teamred.model.User;
 import com.teamred.util.RequestMethod;
 
@@ -9,9 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GetUserAction implements Action {
     
-    UserDao userDao;
+    Dao<User> userDao;
 
-	public GetUserAction(UserDao userDao) {
+	public GetUserAction(Dao<User> userDao) {
 		this.userDao = userDao;
 	}
 
@@ -31,7 +31,7 @@ public class GetUserAction implements Action {
 			//populate model wth the data from the database			
 			request.setAttribute("user", user);
 
-			//return view name
+			// return view name, user in this case (it's a GET request, for forwarding)
 			return "user";
 	}
 }

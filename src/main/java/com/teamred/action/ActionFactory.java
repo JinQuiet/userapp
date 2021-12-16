@@ -3,7 +3,9 @@ package com.teamred.action;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.teamred.dao.Dao;
 import com.teamred.dao.UserDao;
+import com.teamred.model.User;
 import com.teamred.util.PathParser;
 import com.teamred.util.RequestMethod;
 
@@ -15,7 +17,7 @@ public class ActionFactory {
 
 	private Map<String, Action> actions;
 
-	private UserDao userDao;
+	private Dao<User> userDao;
 
 	private ActionFactory() {
 		userDao = new UserDao();

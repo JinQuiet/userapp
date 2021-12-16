@@ -1,10 +1,8 @@
 package com.teamred.action;
 
-import java.util.List;
-
-import com.teamred.dao.UserDao;
+import com.teamred.dao.Dao;
 import com.teamred.model.User;
-import com.teamred.util.PathParser;
+
 import com.teamred.util.RequestMethod;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,9 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class PutUsersAction implements Action {
     
-    UserDao userDao;
+    Dao<User> userDao;
 
-	public PutUsersAction(UserDao userDao) {
+	public PutUsersAction(Dao<User> userDao) {
 		this.userDao = userDao;
 	}
 
@@ -24,16 +22,16 @@ public class PutUsersAction implements Action {
 		// Set form action attribute for the user form
 			request.setAttribute("actionMode", RequestMethod.PUT.name());
 
-			User user = userDao.getUser(Integer.parseInt(request.getParameter("userId")));
+			User user = userDao.get(Integer.parseInt(request.getParameter("userId")));
 			user.setUserName(request.getParameter("userName"));
 			user.setPassword(request.getParameter("password"));
 			user.setUserAge(Integer.parseInt(request.getParameter("userAge")));			
 
 			//populate model wth the data from the database			
-			user = userDao.updateUser(user);
+			user = userDao.update(user);
 			request.setAttribute("user", user);
 
-			//return view name
+			//return view name /users/{id} in this case
 			return request.getPathInfo();
 	}
 }

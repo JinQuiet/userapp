@@ -2,7 +2,7 @@ package com.teamred.action;
 
 import java.util.List;
 
-import com.teamred.dao.UserDao;
+import com.teamred.dao.Dao;
 import com.teamred.model.User;
 import com.teamred.util.PathParser;
 import com.teamred.util.RequestMethod;
@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GetUsersAction implements Action {
     
-    UserDao userDao;
+    Dao<User> userDao;
 
-	public GetUsersAction(UserDao userDao) {
+	public GetUsersAction(Dao<User> userDao) {
 		this.userDao = userDao;
 	}
 
@@ -28,7 +28,7 @@ public class GetUsersAction implements Action {
 			request.setAttribute("actionMode", RequestMethod.PUT.name());
 
 			//populate model wth the data from the database			
-			User user = userDao.getUser(Integer.parseInt(userId));
+			User user = userDao.get(Integer.parseInt(userId));
 			request.setAttribute("user", user);
 
 			//return view name
@@ -38,7 +38,8 @@ public class GetUsersAction implements Action {
 			List<User> users = userDao.getUsers();
 			//populate model
 			request.setAttribute("users", users);
-			//return view name
+			
+			// return view name, users in this case (it's a GET request for forwarding)
 			return "users";
 		}
 	}

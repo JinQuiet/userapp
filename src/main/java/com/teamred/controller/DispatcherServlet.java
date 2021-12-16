@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.teamred.action.Action;
 import com.teamred.action.ActionFactory;
-
 import com.teamred.util.RequestMethod;
 
 import jakarta.servlet.ServletException;
@@ -17,8 +16,17 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DispatcherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static ActionFactory actionFactory;
+	
 	private static final String TEMPLATES_HOME_PATH = "/WEB-INF/classes/templates/";
 	private static final String VIEW_FILE_EXTENSION = ".jsp";
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+
+		actionFactory = ActionFactory.getInstance();
+	}
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,7 +47,9 @@ public class DispatcherServlet extends HttpServlet {
 	
 		try {
 
-			Action action = ActionFactory.getInstance().getAction(request);
+			//get necessary action
+			Action action = actionFactory.getAction(request);
+			//get view name based on the action
 			String view = action.execute(request, response);
 
 			if (request.getMethod().equals(RequestMethod.GET.name())) {
@@ -53,7 +63,6 @@ public class DispatcherServlet extends HttpServlet {
 		} catch (Exception e) {
 			//request.getRequestDispatcher(URI_JSP_HOME + "/error" + URI_EXTENSION).forward(request, response);
 			throw new ServletException("Executing action failed.", e);
-
 		}
 
 	}
