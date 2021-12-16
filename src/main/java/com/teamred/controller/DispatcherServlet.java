@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.teamred.action.Action;
 import com.teamred.action.ActionFactory;
 
-import com.teamred.util.PathParser;
 import com.teamred.util.RequestMethod;
 
 import jakarta.servlet.ServletException;
@@ -18,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DispatcherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private static final String URI_JSP_HOME = "/WEB-INF/classes/templates/";
-	private static final String URI_EXTENSION = ".jsp";
+	private static final String TEMPLATES_HOME_PATH = "/WEB-INF/classes/templates/";
+	private static final String VIEW_FILE_EXTENSION = ".jsp";
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,17 +42,14 @@ public class DispatcherServlet extends HttpServlet {
 			Action action = ActionFactory.getInstance().getAction(request);
 			String view = action.execute(request, response);
 
-			if (request.getMethod().equals(RequestMethod.GET.name()) || 
-				view.equals(PathParser.getPathEntryPoint(request.getPathInfo()))) {
+			if (request.getMethod().equals(RequestMethod.GET.name())) {
 
-				request.getRequestDispatcher(URI_JSP_HOME + view + URI_EXTENSION).forward(request, response);
+				request.getRequestDispatcher(TEMPLATES_HOME_PATH + view + VIEW_FILE_EXTENSION).forward(request, response);
 
 			} else {
-
-				response.sendRedirect(view); // We'd like to fire redirect in case of a view change as result of the
+				response.sendRedirect(request.getContextPath() + view); // We'd like to fire redirect in case of a view change as result of the
 												// action (PRG pattern).
 			}
-
 		} catch (Exception e) {
 			//request.getRequestDispatcher(URI_JSP_HOME + "/error" + URI_EXTENSION).forward(request, response);
 			throw new ServletException("Executing action failed.", e);
@@ -99,7 +95,6 @@ public class DispatcherServlet extends HttpServlet {
 	 */
 	@Override
 	public String getServletInfo() {
-		return "Short description";
+		return "Dispatcher servlet for the UserApp";
 	}
 }
-

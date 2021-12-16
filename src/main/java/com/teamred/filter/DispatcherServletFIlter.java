@@ -25,7 +25,6 @@ public class DispatcherServletFIlter extends HttpFilter {
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-
 		request.getContextPath();
 		request.getRequestURI();
 		request.getPathInfo();
@@ -47,7 +46,7 @@ public class DispatcherServletFIlter extends HttpFilter {
 			request.getRequestDispatcher(servletForvardPath).forward(request, response);
 		}		
 		
-		//don't need this part anymore. I don't use filter chain here since i've already forvarded the requests
+		//don't need this part anymore. I don't use filter chain here since I've already forvarded the requests
 		//chain.doFilter(request, response); // Goes to default servlet.					
 	}
 }

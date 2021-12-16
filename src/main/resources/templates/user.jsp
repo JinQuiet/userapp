@@ -19,10 +19,19 @@
             <div class="container border p-5">
                <div class="row  p-1">
 
-                  <form>
+                  <form method="POST" 
+                     action="${pageContext.request.contextPath}/users/<c:out value="${user.userId}"/>">
+
+                     <c:choose>
+                        <c:when test="${actionMode == 'POST'}">
+                           <input type="hidden" name="actualHttpMethod" value="POST">   
+                        </c:when>
+                        <c:when test="${actionMode == 'PUT'}">
+                           <input type="hidden" name="actualHttpMethod" value="PUT">      
+                        </c:when>                     
+                     </c:choose>
 
                      <div class="row border m-1 p-1 ">
-
 
                         <div class="form-group row p-1">
                            <label class="col-sm-2 col-form-label">User Data</label>
@@ -31,7 +40,8 @@
                            </div>
                         </div>
 
-                        <input  id="userId" name="postId" value="<c:out value="${user.userId}"/>" type="hidden"/>
+
+                        <input  id="userId" name="userId" value="<c:out value="${user.userId}"/>" type="hidden"/>
 
                         <div class="form-group row p-1">
                            <label class="col-sm-2 col-form-label">Name</label>
@@ -63,20 +73,48 @@
                      </div>
 
                      <div class="row border m-1 p-1">
-                        <label class="col-sm-2 col-form-label">CONTROLS</label>
+                        <label class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-2">
-                           <a href="${pageContext.request.contextPath}/users" class="btn btn-success">APPLY</a>
-                        </div>
-                        <div class="col-sm-2">
-                           <a href="${pageContext.request.contextPath}/users" class="btn btn-danger">DELETE</a>
-                        </div>
-                        <div class="col-sm-2">
-                           <a href="${pageContext.request.contextPath}/users" class="btn btn-info">CANCEL</a>
-                        </div>
 
-                     </div>
+                           <c:if test="${actionMode=='POST'}">
+                              <button type="submit" class="btn btn-success">CREATE</button>                              
+                           </c:if>                           
+
+                           <c:if test="${actionMode=='PUT'}">
+                              <button type="submit" class="btn btn-success">APPLY</button>                              
+                           </c:if>                           
+
+                        </div>
+                     </div>                     
 
                   </form>
+
+                  <div class="row border m-1 p-1">
+                     <div class="col-sm-2">
+                     </div>
+                     <div class="col-sm-2">
+
+                        <c:choose>
+                           <c:when test="${actionMode == 'POST'}">
+
+                           </c:when>
+
+                           <c:when test="${actionMode == 'PUT'}">
+                              <form method="POST" 
+                                 action="${pageContext.request.contextPath}/users/<c:out value="${user.userId}"/>">
+                                 <input type="hidden" name="actualHttpMethod" value="DELETE">
+                                 <input  id="userId" name="userId" value="<c:out value="${user.userId}"/>" type="hidden"/>                                 
+                                 <button type="submit" class="btn btn-danger">DELETE</button>
+                              </form>
+                           </c:when>                     
+
+                        </c:choose>
+
+                     </div>
+                     <div class="col-sm-2">
+                        <a href="${pageContext.request.contextPath}/users" class="btn btn-info">CANCEL</a>
+                     </div>
+                  </div>                     
 
                </div>
 

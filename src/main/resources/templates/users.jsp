@@ -20,7 +20,8 @@
          <div class="col border rounded text-center">
 
             <table class="table table-striped table-sm caption-top">
-               <caption><strong>List of users</strong></caption>
+               <caption><strong>List of users :: </strong><a href="${pageContext.request.contextPath}/user" class="btn btn-success">ADD NEW USER</a></caption>
+
                <thead class="table-dark">
                   <tr>
                      <th scope="col">#</th>
