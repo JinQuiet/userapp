@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface Dao<T> {
 
-    public List<T> getUsers();
+    public List<T> getItems();
 
-    public T get(Integer userId);
+    public T get(Integer itemId);
 
-    public T add(T user);
+    public T add(T item);
 
-    public T update(T user);
+    public T update(T item);
 
-    public T delete(Integer userId);    
+    public T delete(Integer itemId);
     
 }

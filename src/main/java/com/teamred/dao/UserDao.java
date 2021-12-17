@@ -7,7 +7,7 @@ import com.teamred.model.User;
 
 public class UserDao implements Dao<User>{
 
-    public List<User> getUsers() {
+    public List<User> getItems() {
         return userGenerator(100, "Max", "pass", 20);
     }    
     
