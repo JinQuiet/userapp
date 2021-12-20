@@ -5,7 +5,7 @@ public class User {
     private String userName;
     private String password;
     private Integer userAge;
-    private Integer email;
+    private String email;
 
     public Integer getUserId() {
         return userId;
@@ -31,10 +31,10 @@ public class User {
     public void setUserAge(Integer userAge) {
         this.userAge = userAge;
     }
-    public Integer getEmail() {
+    public String getEmail() {
         return email;
     }
-    public void setEmail(Integer email) {
+    public void setEmail(String email) {
         this.email = email;
     }
     @Override

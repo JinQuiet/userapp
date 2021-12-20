@@ -1,9 +1,9 @@
 package com.teamred.action;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamred.dao.Dao;
+import com.teamred.json.Payload;
 import com.teamred.model.User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,28 +19,45 @@ public class CreateUserAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		Payload<User> payload = null;
+        String json = "";
 
-		//{"userId":"10", "userName":"Json", "password":"pass", "userAges":"55"}
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 
 			//should pass data into the map and wire values to the User through validators
 			User user = mapper.readValue(request.getInputStream(), User.class);
 
-			user = userDao.add(user); 
+			user = userDao.add(user);
 
-			//return updated user back if everything is fine
-			//need error handling
-			String json = mapper.writeValueAsString(user);
+			if (user != null) {
+				//return updated user back if everything is fine
+				//need error handling
 
-			System.out.println("ResultingJSONstring = " + json);
+				payload = new Payload<User>(user, null);				
+				json = mapper.writeValueAsString(payload);
 
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(json);
+				System.out.println("ResultingJSONstring = " + json);
 
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);
+			} else {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);            
+            	response.setContentType("application/json");
+            	response.setCharacterEncoding("UTF-8");
+            	response.getWriter().write(json);    				
+			}
+
+		} catch (Exception ex) {
+
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json);            
+
+			ex.printStackTrace();
 		}
 
 		return "200";

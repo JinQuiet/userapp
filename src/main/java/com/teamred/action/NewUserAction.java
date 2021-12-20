@@ -1,6 +1,5 @@
 package com.teamred.action;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamred.dao.Dao;
 import com.teamred.json.Payload;
@@ -20,18 +19,22 @@ public class NewUserAction implements Action {
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        //making dummy data for the user on the form
+        //making dummy data for the user on the client the form
         User user = new User();
-        user.setUserName("MyName");
-        user.setUserAge(18);
-        user.setPassword("superpassword");
+            user.setUserName("MyName");
+            user.setUserAge(18);
+            user.setPassword("");
+            user.setEmail("my@email.org");
 
-        Payload<User> payload = new Payload<User>(user, null);
+        Payload<User> payload = null;
+        String json = "";
 
         try {
             ObjectMapper mapper = new ObjectMapper();				
-            String json = mapper.writeValueAsString(payload);
-            
+
+            payload = new Payload<User>(user, null);
+            json = mapper.writeValueAsString(payload);
+          
             System.out.println("ResultingJSONstring = " + json);
 
             response.setStatus(HttpServletResponse.SC_OK);            
@@ -39,8 +42,13 @@ public class NewUserAction implements Action {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json);	
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json);            
+            
+			ex.printStackTrace();            
         }						
 			
 		return "200";

@@ -28,7 +28,6 @@ public class ActionFactory {
 		actions.put("createUser", new CreateUserAction(userDao));
 		actions.put("updateUser", new UpdateUserAction(userDao));		
 		actions.put("deleteUser", new DeleteUserAction(userDao));				
-
 	}
 
 	public static ActionFactory getInstance() {

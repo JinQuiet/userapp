@@ -1,6 +1,5 @@
 package com.teamred.action;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamred.dao.Dao;
 import com.teamred.json.Payload;
@@ -34,15 +33,18 @@ public class GetUserAction implements Action {
 		Validator<String> iv = new IntegerValidator("pathParameter.userId");
 			ValidationResult vr = dataValidationChain.nextLink(userIdToken, iv).resolve();
 
-		if (vr.isValid()) {
-			//populate model wth the data from the database
-			User user = userDao.get(userId);
+		Payload<User> payload = null;
+		String json = "";
+		
+		try {
+			if (vr.isValid()) {
+				//populate model wth the data from the database
+				User user = userDao.get(userId);
 
-			Payload<User> payload = new Payload<User>(user, dataValidationChain.getErrorMessages());
-
-			try {
+				payload = new Payload<User>(user, dataValidationChain.getErrorMessages());
+							
 				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(payload);
+				json = mapper.writeValueAsString(payload);
 
 				System.out.println("ResultingJSONstring = " + json);
 
@@ -50,12 +52,23 @@ public class GetUserAction implements Action {
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(json);
+			} else {
+				payload = new Payload<User>(null, dataValidationChain.getErrorMessages());
+							
+				ObjectMapper mapper = new ObjectMapper();
+				json = mapper.writeValueAsString(payload);
 
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);				
 			}
+			
 
+		} catch (Exception ex) {
+			ex.printStackTrace();            				
 		}
+
 
 		return "200";
 	}

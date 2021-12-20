@@ -1,6 +1,5 @@
 package com.teamred.action;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamred.dao.Dao;
 import com.teamred.json.Payload;
@@ -27,35 +26,53 @@ public class DeleteUserAction implements Action {
 
 		String[] pathTokens = WebUtils.tokenizePath(request.getPathInfo());
 		String userIdToken = pathTokens[1];
-		//Integer userId = Integer.parseInt(userIdToken);
+		
 
 		ValidationChain<String> dataValidationChain = new ValidationChain<String>();
 
 		Validator<String> iv = new IntegerValidator("pathParameter.userId");
 			ValidationResult vr = dataValidationChain.nextLink(userIdToken, iv).resolve();
 
+		Payload<User> payload = null;
+		String json = "";
+
 		if (vr.isValid()) {
 			//populate model wth the data from the database
-			//User user = userDao.delete(userId);
-
-			Payload<User> payload = new Payload<User>(null, dataValidationChain.getErrorMessages());
+			Integer userId = Integer.parseInt(userIdToken);			
 
 			try {
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(payload);
 
-				System.out.println("ResultingJSONstring = " + json);
+				User user = userDao.get(userId);
 
-				response.setStatus(HttpServletResponse.SC_OK);
+				if (user != null) {
+					ObjectMapper mapper = new ObjectMapper();
+
+					payload = new Payload<User>(null, dataValidationChain.getErrorMessages());
+					json = mapper.writeValueAsString(payload);
+	
+					System.out.println("ResultingJSONstring = " + json);
+	
+					response.setStatus(HttpServletResponse.SC_OK);
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().write(json);					
+				} else {
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);            
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().write(json);    					
+				}
+
+			} catch (Exception ex) {
+
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);            
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(json);
-
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
+				response.getWriter().write(json);            
+	
+				ex.printStackTrace();
 			}
-
 		}
-		return "200";
+		return "200";		
 	}
 }
