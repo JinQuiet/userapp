@@ -7,19 +7,19 @@ import com.teamred.model.User;
 
 public class UserDao implements Dao<User>{
 
-    public List<User> getUsers() {
+    public List<User> getAll() {
         return userGenerator(100, "Max", "pass", 20);
     }    
     
     public User get(Integer userId) {
 
-        List<User> users = userGenerator(100, "Max", "pass", 20);
+        List<User> users = userGenerator(1000, "Max", "pass", 20);
 
         return users.stream().filter(user -> userId.equals(user.getUserId())).findFirst().get();
     }
 
     public User add(User user) {
-        List<User> users = userGenerator(100, "Max", "pass", 20);
+        List<User> users = userGenerator(1000, "Max", "pass", 20);
 
         //id is added by database
         user.setUserId(Integer.valueOf(13));
@@ -29,17 +29,18 @@ public class UserDao implements Dao<User>{
     }     
 
     public User update(User user) {
-        List<User> users = userGenerator(1000, "Max", "pass", 20);
+        //List<User> users = userGenerator(1000, "Max", "pass", 20);
+        //Integer userId = user.getUserId();
 
-        Integer userId = user.getUserId();
+        //return users.stream().filter(userFilter -> userId.equals(userFilter.getUserId())).findFirst().get();
 
-        return users.stream().filter(userFilter -> userId.equals(userFilter.getUserId())).findFirst().get();
+        return user;
     }    
 
     public User delete(Integer userId) {
-        List<User> users = userGenerator(100, "Delete", "noPass", 0);
+        List<User> users = userGenerator(1000, "Delete", "noPass", 0);
 
-        return users.stream().filter(user -> user.getUserId().equals(userId)).findFirst().get();
+        return users.stream().filter(user -> user.getUserId().equals(1)).findFirst().get();
     }    
 
     private List<User> userGenerator(int userCount, String defaultUserName, String defaultPassword, Integer defaultAge) {

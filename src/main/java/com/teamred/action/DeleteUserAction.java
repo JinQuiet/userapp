@@ -14,11 +14,11 @@ import com.teamred.web.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class GetUserAction implements Action {
-
+public class DeleteUserAction implements Action {
+    
     Dao<User> userDao;
 
-	public GetUserAction(Dao<User> userDao) {
+	public DeleteUserAction(Dao<User> userDao) {
 		this.userDao = userDao;
 	}
 
@@ -27,7 +27,7 @@ public class GetUserAction implements Action {
 
 		String[] pathTokens = WebUtils.tokenizePath(request.getPathInfo());
 		String userIdToken = pathTokens[1];
-		Integer userId = Integer.parseInt(userIdToken);
+		//Integer userId = Integer.parseInt(userIdToken);
 
 		ValidationChain<String> dataValidationChain = new ValidationChain<String>();
 
@@ -36,9 +36,9 @@ public class GetUserAction implements Action {
 
 		if (vr.isValid()) {
 			//populate model wth the data from the database
-			User user = userDao.get(userId);
+			//User user = userDao.delete(userId);
 
-			Payload<User> payload = new Payload<User>(user, dataValidationChain.getErrorMessages());
+			Payload<User> payload = new Payload<User>(null, dataValidationChain.getErrorMessages());
 
 			try {
 				ObjectMapper mapper = new ObjectMapper();
@@ -56,7 +56,6 @@ public class GetUserAction implements Action {
 			}
 
 		}
-
 		return "200";
 	}
 }

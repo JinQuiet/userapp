@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Dao<T> {
 
-    public List<T> getUsers();
+    public List<T> getAll();
 
     public T get(Integer userId);
 

@@ -6,10 +6,6 @@ import java.util.Map;
 import com.teamred.dao.Dao;
 import com.teamred.dao.UserDao;
 import com.teamred.model.User;
-import com.teamred.util.PathParser;
-import com.teamred.util.RequestMethod;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 public class ActionFactory {
 
@@ -24,14 +20,15 @@ public class ActionFactory {
 		
 		actions = new HashMap<>();
 
-		actions.put("GETindex", new GetIndexAction());
+		actions.put("newUser", new NewUserAction(userDao));		
 
-		actions.put("GETusers", new GetUsersAction(userDao));
+		actions.put("getUser", new GetUserAction(userDao));
+		actions.put("getUsers", new GetUsersAction(userDao));
 		
-		actions.put("GETuser", new GetUserAction(userDao));
-		actions.put("PUTusers", new PutUsersAction(userDao));
-		actions.put("POSTusers", new PostUsersAction(userDao));
-		actions.put("DELETEusers", new DeleteUsersAction(userDao));		
+		actions.put("createUser", new CreateUserAction(userDao));
+		actions.put("updateUser", new UpdateUserAction(userDao));		
+		actions.put("deleteUser", new DeleteUserAction(userDao));				
+
 	}
 
 	public static ActionFactory getInstance() {
@@ -42,49 +39,10 @@ public class ActionFactory {
 		}
 	}
 
-	public Action getAction(HttpServletRequest request) {
-        //parses the name of the entry point path like this, "users", from this (/users, /users/123, etc)
-		String actionName = PathParser.getPathEntryPoint(request.getPathInfo());
+	public Action getAction(String actionName) {
 
-		//request methon that came from the browser
-		String requestMethod = request.getMethod();
+		System.out.println("====Entered ActionFactory");
 
-		//additinal information about request method
-		String actualHttpMethod = request.getParameter("actualHttpMethod");
-
-		//if additional information is true - rename requestMethod
-		if ((actualHttpMethod != null) && 
-			((actualHttpMethod.equals(RequestMethod.PUT.name()) || actualHttpMethod.equals(RequestMethod.DELETE.name())))) {
-			requestMethod = actualHttpMethod;
-		}
-
-		//building actionName
- 		switch (RequestMethod.valueOf(requestMethod)) {
-			case GET :  {
-				actionName = RequestMethod.GET.name().concat(actionName);
-				break;
-			}
-			case POST : {
-				actionName = RequestMethod.POST.name().concat(actionName);
-				break;
-			}
-			case PUT : {
-				actionName = RequestMethod.PUT.name().concat(actionName);
-				break;
-			}
-			case DELETE : {
-				actionName = RequestMethod.DELETE.name().concat(actionName);
-				break;
-			}
-			default :{
-				actionName = "GETindex";
-				break;
-			}
-		}
-
-		//process cases when there is no action available
-		Action action = actions.get(actionName);
-
-		return action;
+		return actions.get(actionName);
 	}
 }

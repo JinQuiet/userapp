@@ -2,16 +2,21 @@ package com.teamred.action;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamred.dao.Dao;
+import com.teamred.json.Payload;
 import com.teamred.model.User;
-import com.teamred.util.PathParser;
-import com.teamred.util.RequestMethod;
+import com.teamred.validator.ValidationChain;
+import com.teamred.validator.ValidationResult;
+import com.teamred.validator.Validator;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class GetUsersAction implements Action {
-    
+
     Dao<User> userDao;
 
 	public GetUsersAction(Dao<User> userDao) {
@@ -21,26 +26,53 @@ public class GetUsersAction implements Action {
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		String userId = PathParser.getPathParameter(request.getPathInfo());
+		//populate model wth the data from the database
+		List<User> users = userDao.getAll();
 
-		if (userId != null) {
-			// Set form action attribute for the user form
-			request.setAttribute("actionMode", RequestMethod.PUT.name());
+		ValidationChain<List<User>> dataValidationChain = new ValidationChain<List<User>>();
+		
+		//validator checks if the list is ok to send back to the client 
+		Validator<List<User>> validator = new Validator<List<User>>() {
+			private ValidationResult validationResult;
+			@Override
+			public ValidationResult validate(List<User> t) {
+				validationResult = ValidationResult.invalid("Users List is Empty");
 
-			//populate model wth the data from the database			
-			User user = userDao.get(Integer.parseInt(userId));
-			request.setAttribute("user", user);
+				if ((t!=null) && (t.size()>0))
+					validationResult = ValidationResult.valid();
 
-			//return view name
-			return "user";
-		} else {
-			//get all users
-			List<User> users = userDao.getUsers();
-			//populate model
-			request.setAttribute("users", users);
-			
-			// return view name, users in this case (it's a GET request for forwarding)
-			return "users";
-		}
+				return validationResult;
+			}
+			@Override
+			public String getValidationTarget() {
+				return "users.list";
+			}
+		};
+
+		ValidationResult vr = dataValidationChain.nextLink(users, validator).resolve();
+
+		if (vr.isValid()) {
+			//populate model wth the data from the database
+
+		Payload<List<User>> payload = new Payload<List<User>>(users, dataValidationChain.getErrorMessages());
+
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(payload);
+
+				System.out.println("ResultingJSONstring = " + json);
+
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);
+
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+
+	}
+
+		return "200";
 	}
 }
