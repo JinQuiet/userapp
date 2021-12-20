@@ -5,7 +5,8 @@ public class User {
     private String userName;
     private String password;
     private Integer userAge;
-    
+    private String email;
+
     public Integer getUserId() {
         return userId;
     }
@@ -30,11 +31,17 @@ public class User {
     public void setUserAge(Integer userAge) {
         this.userAge = userAge;
     }
-    
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((password == null) ? 0 : password.hashCode());
         result = prime * result + ((userAge == null) ? 0 : userAge.hashCode());
         result = prime * result + ((userId == null) ? 0 : userId.hashCode());
@@ -50,6 +57,11 @@ public class User {
         if (getClass() != obj.getClass())
             return false;
         User other = (User) obj;
+        if (email == null) {
+            if (other.email != null)
+                return false;
+        } else if (!email.equals(other.email))
+            return false;
         if (password == null) {
             if (other.password != null)
                 return false;
@@ -74,7 +86,7 @@ public class User {
     }
     @Override
     public String toString() {
-        return "User [password=" + password + ", userAge=" + userAge + ", userId=" + userId + ", userName=" + userName
-                + "]";
+        return "User [email=" + email + ", password=" + password + ", userAge=" + userAge + ", userId=" + userId
+                + ", userName=" + userName + "]";
     }
 }
